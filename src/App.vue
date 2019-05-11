@@ -3,7 +3,7 @@
     <navbar :title="title" />  
     <add-todo @add-todo="addTodo" />
     <ul>
-      <todo-item :key="item._id" v-for="item in items" :item="item" @delete-todo="deleteTodo"/>
+      <todo-item :key="item.id" v-for="item in items" :item="item" @delete-todo="deleteTodo"/>
       <p class="error">{{error}}</p>
     </ul>
   </div>
@@ -28,7 +28,7 @@ export default {
         title: "Todo Application",
         items: [],
         error: "",
-        endpoint: "http://localhost:3000/todos/"
+        endpoint: "https://jsonplaceholder.typicode.com/todos/"
       };
     },
     methods: {
@@ -71,7 +71,7 @@ export default {
         Axios.delete(this.endpoint+id)
         .then( 
           (response) => {
-            this.items = this.items.filter( item => item._id != id);
+            this.items = this.items.filter( item => item.id != id);
           }
         )
         .catch(

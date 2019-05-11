@@ -5,7 +5,7 @@ export default{
 
     async getTodos(){
         let result = {};
-        await Axios.get('http://localhost:3000/todos')
+        await Axios.get('https://jsonplaceholder.typicode.com/todos/?&_limit=10')
         .then( response => {
             result = {
                 status: "success",

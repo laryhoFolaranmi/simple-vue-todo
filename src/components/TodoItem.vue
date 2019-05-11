@@ -8,7 +8,7 @@ export default {
     props: ['item'],
     methods:{
         deleteTodo(){
-            this.$emit('delete-todo', this.item._id);
+            this.$emit('delete-todo', this.item.id);
         }
     }
 }
