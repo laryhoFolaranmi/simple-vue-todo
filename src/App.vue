@@ -1,49 +1,91 @@
 <template>
   <div id="app">
     <navbar :title="title" />  
-    <add-todo @add-todo="createTodo" />
+    <add-todo @add-todo="addTodo" />
     <ul>
-      <todo-item :key="item.id" v-for="item in items" :item="item" @delete-todo="removeTodo"/>
+      <todo-item :key="item._id" v-for="item in items" :item="item" @delete-todo="deleteTodo"/>
+      <p class="error">{{error}}</p>
     </ul>
   </div>
 </template>
 
 
 <script>
+import Axios from 'axios';
 import AddTodo from './components/AddTodo.vue';
 import Navbar from './components/Navbar.vue';
 import TodoItem from './components/TodoItem.vue';
-
+import TodosService from './services/Todos';
 export default {
-  name: 'app',
-  components: {
-    Navbar,
-    TodoItem,
-    AddTodo
-  },
-  data(){
-    return {
-      title: "Todo Application",
-      count: 3,
-      items: [
-        {id:0, text: "item 1"},
-        {id:1, text: "item 2"},
-        {id:2, text: "item 3"},
-      ]
-    };
-  },
-  methods: {
-      createTodo(text){
-        const todo = {
-          id: this.count++,
-          text
-        }
-        this.items.push(todo);
+    name: 'app',
+    components: {
+      Navbar,
+      TodoItem,
+      AddTodo
+    },
+    data(){
+      return {
+        title: "Todo Application",
+        items: [],
+        error: "",
+        endpoint: "http://localhost:3000/todos/"
+      };
+    },
+    methods: {
+
+      getTodos(){
+        let result = TodosService.getTodos()
+        result.then( res => {
+          if(res.status === "success"){
+              this.items = res.data;
+          }else{
+              this.error = "unknown error occured";
+              console.log(res.data);
+          }
+        })
+
       },
-      removeTodo(id){
-        this.items = this.items.filter( item => item.id != id);
+
+      addTodo(text){
+        const todo = {
+          userId: 1,
+          title: text,
+          completed: false
+        }
+ 
+        Axios.post(this.endpoint, todo)
+        .then( 
+          (response) => {
+            this.items.push(response.data);
+          }
+        )
+        .catch(
+          (/* */)  => {
+            this.error = "error occured while adding todo";
+            // console.log(error);
+          }
+        );
+      },
+
+      deleteTodo(id){
+        Axios.delete(this.endpoint+id)
+        .then( 
+          (response) => {
+            this.items = this.items.filter( item => item._id != id);
+          }
+        )
+        .catch(
+          (/* */)  => {
+            this.error = "error occured while deleting todo";
+            // console.log(error);
+          }
+        );
       }
-  }
+    },
+    created(){
+      this.getTodos();
+    }
+
 }
 </script>
 
@@ -62,6 +104,9 @@ body{
 ul {
   padding: 0;
 
+}
+.error {
+  color: red;
 }
 
 </style>

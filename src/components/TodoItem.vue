@@ -1,5 +1,5 @@
 <template>
-    <li>{{item.text}} <span class="x" @click="deleteTodo">x</span></li>
+    <li>{{item.title}} <span class="x" @click="deleteTodo">x</span></li>
 </template>
 
 <script>
@@ -8,7 +8,7 @@ export default {
     props: ['item'],
     methods:{
         deleteTodo(){
-            this.$emit('delete-todo', this.item.id);
+            this.$emit('delete-todo', this.item._id);
         }
     }
 }
